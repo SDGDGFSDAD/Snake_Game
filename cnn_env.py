@@ -3,14 +3,15 @@ from gymnasium import spaces
 import numpy as np
 import pygame
 import random
-from snake_game import Snake, Apple, WIDTH, HEIGHT, BLOCK_SIZE,direction_map,screen ,draw_background # Import relevant components from your game
-
+from snake_game import Snake, Apple, WIDTH, HEIGHT, BLOCK_SIZE,direction_map,screen ,draw_background,FPS # Import relevant components from your game
+import time
 class SnakeEnv(gym.Env):
     #metadata = {'render.modes': ['human', 'rgb_array'], 'video.frames_per_second': 50}
 
     def __init__(self,render_mode=None):
         super(SnakeEnv, self).__init__()
         self.render_mode = render_mode
+        self.fps = pygame.time.Clock().tick(FPS)
         self.snake = Snake()
         self.apple = Apple()
         self.game_over = False
@@ -42,6 +43,7 @@ class SnakeEnv(gym.Env):
         return pixel_array.astype(np.uint8)
     
     def reset(self,seed=None):
+
         self.episode_counter+=1
         self.total_reward = 0
         self.snake.length = 3
@@ -107,6 +109,7 @@ class SnakeEnv(gym.Env):
 
         # Check if the snake got the apple
         if current_distance == 0:
+        
             (head_x, head_y) = (apple_x, apple_y)
             self.score += 1
             reward = 10
@@ -133,25 +136,10 @@ class SnakeEnv(gym.Env):
 
 
 
-    def render(self):
-
-        # for event in pygame.event.get():
-        #     if event.type == pygame.QUIT:
-        #         pygame.quit()
-        #         quit()
-
-        # if self.episode_counter % 10 == 0: 
-        #     if self.render_mode == 'human':
-        #         self.clock.tick(20)
-                # Render the environment in a way that is human-friendly.
-        # For instance, updating the PyGame display.
-        # draw_background(screen)
-        # self.snake.draw(screen)
-        # self.apple.draw(screen)
-        # pygame.display.update()
-        # else:
-        #     pygame.event.pump()
-        return
+    def render(self, mode='human'):
+        # Add a sleep in the render method to slow down the rendering
+        if self.render_mode == 'human':
+            time.sleep(0.1) 
 
     
     def close(self):

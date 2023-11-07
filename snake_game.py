@@ -104,10 +104,12 @@ class Snake:
             
     def handle_keys(self):
         for event in pygame.event.get():
+    
             if event.type == pygame.QUIT:
                 pygame.quit()
                 quit()
             elif event.type == pygame.KEYDOWN:
+                print("Key pressed:", event.key)
                 if event.key == pygame.K_UP or event.key == pygame.K_w:
                     self.direction = pygame.K_UP
                 elif event.key == pygame.K_DOWN or event.key == pygame.K_s:
@@ -146,30 +148,32 @@ class Apple:
 def draw_background(surface):
     surface.fill(BLACK)
 
+def check_snake_colli_apply(snake_head_position,apple_position):
+    snake_head_rect = pygame.Rect(snake_head_position, (BLOCK_SIZE, BLOCK_SIZE))
+    apple_rect = pygame.Rect(apple_position, (BLOCK_SIZE, BLOCK_SIZE))
+ 
+    if snake_head_rect.colliderect(apple_rect):
+        return True 
+    else:
+        False
+
 
 def main():
     snake = Snake()
     apple = Apple()
 
     while True:
-        
-   
-        snake.handle_keys()
         draw_background(screen)
-   
-       # print(current_time ,last_move_time)
-        # Update game logic only if the interval has passed
-        # if current_time - last_move_time > MOVE_INTERVAL:
+        # Handle every event in the event queue
+        snake.handle_keys()
+        
+
         snake.move()
-        # last_move_time = current_time
-        
-        # Create a Rect for the snake's head
-        snake_head_rect = pygame.Rect(snake.head_position(), (BLOCK_SIZE, BLOCK_SIZE))
-        # Create a Rect for the apple
-        apple_rect = pygame.Rect(apple.position, (BLOCK_SIZE, BLOCK_SIZE))
-        
-        # Check if the snake's head collides with the apple
-        if snake_head_rect.colliderect(apple_rect):
+    
+
+ 
+        # if snake_head_rect.colliderect(apple_rect):
+        if check_snake_colli_apply(snake.head_position(),apple.position): 
             snake.eat()
             apple.randomize_position()
 
